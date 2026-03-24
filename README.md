@@ -1,5 +1,8 @@
 # 0G Agent Kit
 
+[![CI](https://github.com/alexandre-mrt/0g-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/alexandre-mrt/0g-agent-kit/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 **TypeScript SDK for building, deploying, and monetizing AI agents on the 0G network.**
 
 Build autonomous AI agents that can trade DeFi, manage wallets, store persistent memory on 0G Storage, and mint themselves as INFTs (ERC-7857) for ownership transfer and monetization.
