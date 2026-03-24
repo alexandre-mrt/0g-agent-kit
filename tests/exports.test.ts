@@ -68,3 +68,24 @@ describe("Package exports", () => {
 		expect(typeof lib.hashData).toBe("function");
 	});
 });
+
+describe("Export count verification", () => {
+	test("has at least 25 named exports", () => {
+		const exportCount = Object.keys(lib).length;
+		expect(exportCount).toBeGreaterThanOrEqual(25);
+	});
+
+	test("no export is undefined", () => {
+		for (const [key, value] of Object.entries(lib)) {
+			expect(value).toBeDefined();
+		}
+	});
+
+	test("class exports are constructable", () => {
+		expect(lib.Agent.prototype).toBeTruthy();
+		expect(lib.ZeroGInference.prototype).toBeTruthy();
+		expect(lib.LocalMemory.prototype).toBeTruthy();
+		expect(lib.ZeroGMemory.prototype).toBeTruthy();
+		expect(lib.AgentWallet.prototype).toBeTruthy();
+	});
+});
