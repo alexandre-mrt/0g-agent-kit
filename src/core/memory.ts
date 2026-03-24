@@ -68,7 +68,9 @@ export class ZeroGMemory implements MemoryProvider {
 			await writeFile(tempPath, data);
 
 			const file = await ZgFile.fromFilePath(tempPath);
-			const [tree, treeErr] = await file.merkleTree();
+			const treeResult = await file.merkleTree();
+			const tree = Array.isArray(treeResult) ? treeResult[0] : treeResult;
+			const treeErr = Array.isArray(treeResult) ? treeResult[1] : null;
 
 			if (treeErr || !tree) {
 				throw new Error(`Failed to compute merkle tree: ${treeErr}`);
@@ -76,11 +78,12 @@ export class ZeroGMemory implements MemoryProvider {
 
 			const rootHash = tree.rootHash() ?? "";
 			const indexer = new Indexer(this.indexerRpc);
-			const [, uploadErr] = await indexer.upload(
+			const uploadResult = await indexer.upload(
 				file,
 				this.provider._getConnection().url,
 				this.signer,
 			);
+			const uploadErr = Array.isArray(uploadResult) ? uploadResult[1] : null;
 
 			if (uploadErr) {
 				throw new Error(`Upload failed: ${uploadErr}`);
@@ -106,7 +109,8 @@ export class ZeroGMemory implements MemoryProvider {
 
 		try {
 			const indexer = new Indexer(this.indexerRpc);
-			const [, downloadErr] = await indexer.download(entry.rootHash, outputPath, true);
+			const result = await indexer.download(entry.rootHash, outputPath, true);
+			const downloadErr = Array.isArray(result) ? result[1] : null;
 
 			if (downloadErr) {
 				throw new Error(`Download failed: ${downloadErr}`);

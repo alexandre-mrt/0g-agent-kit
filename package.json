@@ -29,7 +29,7 @@
     }
   },
   "scripts": {
-    "build": "bun build src/index.ts --outdir dist --target node && tsc --emitDeclarationOnly",
+    "build": "bun build src/index.ts --outdir dist --target node",
     "dev": "bun run --watch examples/simple-agent/index.ts",
     "test": "bun test",
     "lint": "bunx biome check --write .",
