@@ -29,6 +29,21 @@ npm install 0g-agent-kit
 ### Create an Agent
 
 ```typescript
+// Quick start - one line agent
+import { quickAgent } from '0g-agent-kit';
+
+const agent = quickAgent({
+  name: 'MyAgent',
+  inferenceEndpoint: 'https://api.openai.com',
+  inferenceApiKey: process.env.OPENAI_API_KEY,
+});
+
+const result = await agent.run('What is the current time?');
+```
+
+Or with full control:
+
+```typescript
 import { createAssistantAgent } from '0g-agent-kit';
 
 const agent = createAssistantAgent({
