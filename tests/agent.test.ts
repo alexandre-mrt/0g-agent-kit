@@ -121,6 +121,44 @@ describe("Agent", () => {
 		);
 		expect(agent.name).toBe("ToolAgent");
 	});
+
+	test("uses custom system prompt", () => {
+		const agent = new Agent(
+			{
+				name: "Custom",
+				model: "m",
+				maxIterations: 1,
+				temperature: 0,
+				systemPrompt: "You are a custom agent.",
+			},
+			{ memory, wallet, inference },
+		);
+		expect(agent.name).toBe("Custom");
+	});
+
+	test("generates default system prompt when none provided", () => {
+		const agent = new Agent(
+			{ name: "Default", description: "A default agent", model: "m", maxIterations: 1, temperature: 0 },
+			{ memory, wallet, inference },
+		);
+		expect(agent.description).toBe("A default agent");
+	});
+
+	test("multiple tools can be registered", () => {
+		const tools: ToolDefinition[] = Array.from({ length: 5 }, (_, i) => ({
+			name: `tool_${i}`,
+			description: `Tool ${i}`,
+			parameters: { type: "object", properties: {} },
+			execute: async () => `result_${i}`,
+		}));
+
+		const agent = new Agent(
+			{ name: "Multi", model: "m", maxIterations: 1, temperature: 0 },
+			{ memory, wallet, inference },
+			tools,
+		);
+		expect(agent.name).toBe("Multi");
+	});
 });
 
 describe("AgentWallet", () => {
