@@ -130,4 +130,15 @@ describe("hashData", () => {
 		const hash = hashData("x".repeat(100000));
 		expect(hash).toMatch(/^[a-f0-9]{64}$/);
 	});
+
+	test("similar inputs produce very different hashes", () => {
+		const h1 = hashData("test1");
+		const h2 = hashData("test2");
+		// Count differing characters - should be many (avalanche effect)
+		let diff = 0;
+		for (let i = 0; i < h1.length; i++) {
+			if (h1[i] !== h2[i]) diff++;
+		}
+		expect(diff).toBeGreaterThan(10);
+	});
 });
