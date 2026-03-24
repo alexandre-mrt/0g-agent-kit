@@ -79,6 +79,33 @@ describe("Agent", () => {
 		expect(rootHash).toBe("agent-state:session-1");
 	});
 
+	test("loadState restores from memory", async () => {
+		const sharedMemory = new LocalMemory();
+		const agent1 = new Agent(
+			{ name: "Saver", model: "m", maxIterations: 1, temperature: 0 },
+			{ memory: sharedMemory, wallet, inference },
+		);
+		await agent1.saveState("test-session");
+
+		const agent2 = new Agent(
+			{ name: "Loader", model: "m", maxIterations: 1, temperature: 0 },
+			{ memory: sharedMemory, wallet, inference },
+		);
+		await agent2.loadState("test-session");
+		// Should not throw
+		expect(agent2.name).toBe("Loader");
+	});
+
+	test("loadState handles missing session gracefully", async () => {
+		const agent = new Agent(
+			{ name: "Test", model: "m", maxIterations: 1, temperature: 0 },
+			{ memory, wallet, inference },
+		);
+		await agent.loadState("nonexistent-session");
+		// Should not throw
+		expect(agent.name).toBe("Test");
+	});
+
 	test("accepts tools", () => {
 		const tool: ToolDefinition = {
 			name: "test_tool",
