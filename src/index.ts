@@ -45,3 +45,5 @@ export {
 } from "./utils/config";
 export type { AgentConfig, ZeroGConfig, InferenceConfig } from "./utils/config";
 export { encrypt, decrypt, generateEncryptionKey, hashData } from "./utils/crypto";
+export { quickAgent } from "./quick";
+export type { QuickAgentOptions } from "./quick";
