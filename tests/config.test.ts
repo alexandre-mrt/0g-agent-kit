@@ -73,4 +73,28 @@ describe("ZeroGConfigSchema", () => {
 			}),
 		).toThrow();
 	});
+
+	test("accepts custom evmRpc", () => {
+		const result = ZeroGConfigSchema.parse({
+			evmRpc: "https://custom-rpc.example.com",
+			indexerRpc: "https://indexer.0g.ai",
+			privateKey: "0xkey",
+		});
+		expect(result.evmRpc).toBe("https://custom-rpc.example.com");
+	});
+});
+
+describe("Config boundary values", () => {
+	test("AgentConfig temperature at boundaries", () => {
+		expect(() => AgentConfigSchema.parse({ name: "T", temperature: 0 })).not.toThrow();
+		expect(() => AgentConfigSchema.parse({ name: "T", temperature: 2 })).not.toThrow();
+		expect(() => AgentConfigSchema.parse({ name: "T", temperature: -0.1 })).toThrow();
+		expect(() => AgentConfigSchema.parse({ name: "T", temperature: 2.1 })).toThrow();
+	});
+
+	test("AgentConfig maxIterations must be positive integer", () => {
+		expect(() => AgentConfigSchema.parse({ name: "T", maxIterations: 1 })).not.toThrow();
+		expect(() => AgentConfigSchema.parse({ name: "T", maxIterations: 0 })).toThrow();
+		expect(() => AgentConfigSchema.parse({ name: "T", maxIterations: 1.5 })).toThrow();
+	});
 });
