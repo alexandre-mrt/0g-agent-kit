@@ -111,6 +111,20 @@ describe("AgentWallet", () => {
 		const wallet = new AgentWallet(TEST_PRIVATE_KEY, TEST_RPC);
 		expect(wallet.getProvider()).toBeTruthy();
 	});
+
+	test("same key always produces same address", () => {
+		const w1 = new AgentWallet(TEST_PRIVATE_KEY, TEST_RPC);
+		const w2 = new AgentWallet(TEST_PRIVATE_KEY, TEST_RPC);
+		expect(w1.address).toBe(w2.address);
+	});
+
+	test("rejects key without 0x prefix", () => {
+		expect(() => new AgentWallet("badkey", TEST_RPC)).toThrow("0x");
+	});
+
+	test("rejects invalid RPC URL", () => {
+		expect(() => new AgentWallet(TEST_PRIVATE_KEY, "not-a-url")).toThrow("URL");
+	});
 });
 
 describe("ZeroGInference", () => {

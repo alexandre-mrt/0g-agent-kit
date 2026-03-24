@@ -13,7 +13,17 @@ export class AgentWallet {
 	private readonly provider: ethers.JsonRpcProvider;
 	private readonly signer: ethers.Wallet;
 
+	/**
+	 * Validate inputs early to give clear error messages.
+	 */
+
 	constructor(privateKey: string, rpcUrl: string) {
+		if (!privateKey || !privateKey.startsWith("0x")) {
+			throw new Error("Private key must start with 0x");
+		}
+		if (!rpcUrl || !rpcUrl.startsWith("http")) {
+			throw new Error("RPC URL must be a valid HTTP(S) URL");
+		}
 		this.provider = new ethers.JsonRpcProvider(rpcUrl);
 		this.signer = new ethers.Wallet(privateKey, this.provider);
 	}
