@@ -57,4 +57,12 @@ describe("Tool name uniqueness", () => {
 			expect(tool.parameters).toHaveProperty("type", "object");
 		}
 	});
+
+	test("all tool execute functions return promises", async () => {
+		const tool = createTimeTool();
+		const result = tool.execute({});
+		expect(result).toBeInstanceOf(Promise);
+		const resolved = await result;
+		expect(typeof resolved).toBe("string");
+	});
 });
