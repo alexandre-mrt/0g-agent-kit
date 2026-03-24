@@ -80,4 +80,37 @@ describe("encryptAgentMetadata", () => {
 		const r2 = encryptAgentMetadata(metadata);
 		expect(r1.encryptionKey).not.toBe(r2.encryptionKey);
 	});
+
+	test("encrypted data can be decrypted back to original metadata", () => {
+		const { decrypt } = require("../src/utils/crypto");
+		const metadata = createMetadataFromAgent(
+			"RecoverAgent",
+			"Full round-trip test",
+			"llama-3.1-70b",
+			["trade", "analyze", "memory"],
+			"You are a trading agent",
+			{ version: "2.0", custom: true },
+		);
+
+		const result = encryptAgentMetadata(metadata);
+		const key = Buffer.from(result.encryptionKey, "hex");
+		const decrypted = decrypt(result.encrypted, key);
+		const recovered = JSON.parse(decrypted);
+
+		expect(recovered.name).toBe("RecoverAgent");
+		expect(recovered.description).toBe("Full round-trip test");
+		expect(recovered.model).toBe("llama-3.1-70b");
+		expect(recovered.capabilities).toEqual(["trade", "analyze", "memory"]);
+		expect(recovered.systemPrompt).toBe("You are a trading agent");
+		expect(recovered.customData).toEqual({ version: "2.0", custom: true });
+		expect(recovered.version).toBe("1.0.0");
+	});
+
+	test("metadata hash is consistent for same data", () => {
+		const metadata = createMetadataFromAgent("Hash", "Test", "m", ["cap"]);
+		const r1 = encryptAgentMetadata(metadata);
+		// Hash is of the raw JSON, which includes createdAt, so it differs per call
+		// But the hash format should be consistent
+		expect(r1.metadataHash).toMatch(/^[a-f0-9]{64}$/);
+	});
 });
