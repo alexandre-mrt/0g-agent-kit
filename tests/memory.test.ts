@@ -52,4 +52,42 @@ describe("LocalMemory", () => {
 		expect(await mem.load("array")).toEqual([1, 2, 3]);
 		expect(await mem.load("null")).toBeNull();
 	});
+
+	test("list returns entries with timestamps", async () => {
+		const mem = new LocalMemory();
+		await mem.save("ts-key", "data");
+		const entries = await mem.list();
+		expect(entries[0].timestamp).toBeGreaterThan(0);
+		expect(entries[0].key).toBe("ts-key");
+	});
+
+	test("delete non-existent key does not throw", async () => {
+		const mem = new LocalMemory();
+		await mem.delete("does-not-exist");
+		const entries = await mem.list();
+		expect(entries.length).toBe(0);
+	});
+
+	test("handles deeply nested objects", async () => {
+		const mem = new LocalMemory();
+		const complex = {
+			level1: {
+				level2: {
+					level3: { data: [1, 2, { nested: true }] },
+				},
+			},
+		};
+		await mem.save("deep", complex);
+		const loaded = await mem.load("deep");
+		expect(loaded).toEqual(complex);
+	});
+
+	test("isolation between instances", async () => {
+		const mem1 = new LocalMemory();
+		const mem2 = new LocalMemory();
+		await mem1.save("key", "from-mem1");
+		await mem2.save("key", "from-mem2");
+		expect(await mem1.load("key")).toBe("from-mem1");
+		expect(await mem2.load("key")).toBe("from-mem2");
+	});
 });
