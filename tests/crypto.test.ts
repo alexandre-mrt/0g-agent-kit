@@ -75,6 +75,31 @@ describe("encrypt / decrypt", () => {
 	});
 });
 
+describe("encrypt / decrypt - special characters", () => {
+	test("handles unicode and emojis", () => {
+		const key = generateEncryptionKey();
+		const text = "Agent with unicode: and special chars: <>&\"'";
+		const encrypted = encrypt(text, key);
+		const decrypted = decrypt(encrypted, key);
+		expect(decrypted).toBe(text);
+	});
+
+	test("same plaintext produces different ciphertexts (random IV)", () => {
+		const key = generateEncryptionKey();
+		const enc1 = encrypt("same", key);
+		const enc2 = encrypt("same", key);
+		expect(enc1.ciphertext).not.toBe(enc2.ciphertext);
+		expect(enc1.iv).not.toBe(enc2.iv);
+	});
+
+	test("tampered ciphertext fails to decrypt", () => {
+		const key = generateEncryptionKey();
+		const encrypted = encrypt("secret", key);
+		encrypted.ciphertext = "ff" + encrypted.ciphertext.slice(2);
+		expect(() => decrypt(encrypted, key)).toThrow();
+	});
+});
+
 describe("hashData", () => {
 	test("returns a 64-char hex string", () => {
 		const hash = hashData("test");
