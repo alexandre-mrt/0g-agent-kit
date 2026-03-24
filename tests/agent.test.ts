@@ -61,6 +61,15 @@ describe("Agent", () => {
 		expect(true).toBe(true);
 	});
 
+	test("run rejects empty message", async () => {
+		const agent = new Agent(
+			{ name: "Test", model: "m", maxIterations: 1, temperature: 0 },
+			{ memory, wallet, inference },
+		);
+		expect(agent.run("")).rejects.toThrow("empty");
+		expect(agent.run("   ")).rejects.toThrow("empty");
+	});
+
 	test("saveState stores to memory", async () => {
 		const agent = new Agent(
 			{ name: "StateAgent", model: "m", maxIterations: 1, temperature: 0 },

@@ -65,10 +65,14 @@ Think step by step. Use tools when needed. Be concise and precise.`;
 	 * Executes an agentic loop: inference -> tool calls -> inference -> ... until done.
 	 */
 	async run(userMessage: string): Promise<AgentRunResult> {
+		if (!userMessage || userMessage.trim().length === 0) {
+			throw new Error("User message cannot be empty");
+		}
+
 		const messages: ChatMessage[] = [
 			{ role: "system", content: this.systemPrompt },
 			...this.conversationHistory,
-			{ role: "user", content: userMessage },
+			{ role: "user", content: userMessage.trim() },
 		];
 
 		const toolCallLog: AgentRunResult["toolCalls"] = [];
