@@ -33,6 +33,18 @@ describe("validateMetadata", () => {
 		const errors = validateMetadata(metadata);
 		expect(errors).toContain("At least one capability is required");
 	});
+
+	test("catches missing model", () => {
+		const metadata = createMetadataFromAgent("Name", "Desc", "", ["cap"]);
+		const errors = validateMetadata(metadata);
+		expect(errors).toContain("Model is required");
+	});
+
+	test("catches all errors at once", () => {
+		const metadata = createMetadataFromAgent("", "", "", []);
+		const errors = validateMetadata(metadata);
+		expect(errors.length).toBeGreaterThanOrEqual(3);
+	});
 });
 
 describe("createMetadataFromAgent", () => {
