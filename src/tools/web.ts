@@ -18,27 +18,34 @@ export function createFetchWebTool(): ToolDefinition {
 		execute: async (args) => {
 			const { url, maxLength = 5000 } = args as { url: string; maxLength?: number };
 
-			const response = await fetch(url, {
-				headers: { "User-Agent": "0G-Agent-Kit/0.1.0" },
-				signal: AbortSignal.timeout(10000),
-			});
-
-			if (!response.ok) {
-				return JSON.stringify({
-					success: false,
-					error: `HTTP ${response.status}: ${response.statusText}`,
+			try {
+				const response = await fetch(url, {
+					headers: { "User-Agent": "0G-Agent-Kit/0.1.0" },
+					signal: AbortSignal.timeout(10000),
 				});
-			}
 
-			const text = await response.text();
-			const truncated = text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+				if (!response.ok) {
+					return JSON.stringify({
+						success: false,
+						error: `HTTP ${response.status}: ${response.statusText}`,
+					});
+				}
 
-			return JSON.stringify({
+				const text = await response.text();
+				const truncated = text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+
+				return JSON.stringify({
 				success: true,
 				url,
 				contentLength: text.length,
 				content: truncated,
 			});
+			} catch (error) {
+				return JSON.stringify({
+					success: false,
+					error: error instanceof Error ? error.message : "Fetch failed",
+				});
+			}
 		},
 	};
 }
