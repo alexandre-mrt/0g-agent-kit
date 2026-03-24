@@ -108,4 +108,51 @@ describe("createAssistantAgent", () => {
 
 		expect(agent.getMemory()).toBeTruthy();
 	});
+
+	test("uses local memory when useLocalMemory=true", async () => {
+		const agent = createAssistantAgent({
+			inference: {
+				endpoint: "https://api.example.com",
+				model: "test",
+				maxTokens: 100,
+				temperature: 0.7,
+			},
+			useLocalMemory: true,
+		});
+
+		// LocalMemory should work without 0G config
+		const mem = agent.getMemory();
+		await mem.save("test-key", "test-value");
+		const value = await mem.load("test-key");
+		expect(value).toBe("test-value");
+	});
+});
+
+describe("Template agent wallet access", () => {
+	test("trading agent wallet has valid address", () => {
+		const agent = createTradingAgent({
+			inference: {
+				endpoint: "https://api.example.com",
+				model: "test",
+				maxTokens: 100,
+				temperature: 0.3,
+			},
+			dexRouterAddress: "0x1",
+			useLocalMemory: true,
+		});
+		expect(agent.getWallet().address).toMatch(/^0x[a-fA-F0-9]{40}$/);
+	});
+
+	test("assistant agent wallet has valid address", () => {
+		const agent = createAssistantAgent({
+			inference: {
+				endpoint: "https://api.example.com",
+				model: "test",
+				maxTokens: 100,
+				temperature: 0.7,
+			},
+			useLocalMemory: true,
+		});
+		expect(agent.getWallet().address).toMatch(/^0x[a-fA-F0-9]{40}$/);
+	});
 });
