@@ -98,3 +98,28 @@ describe("Config boundary values", () => {
 		expect(() => AgentConfigSchema.parse({ name: "T", maxIterations: 1.5 })).toThrow();
 	});
 });
+
+describe("loadConfigFromEnv", () => {
+	test("loads from env vars when set", () => {
+		process.env.ZG_EVM_RPC = "https://custom-rpc.example.com";
+		process.env.ZG_INDEXER_RPC = "https://indexer.example.com";
+		process.env.ZG_PRIVATE_KEY = "0xkey123";
+		process.env.INFERENCE_ENDPOINT = "https://inference.example.com";
+		process.env.INFERENCE_API_KEY = "sk-test";
+
+		const { loadConfigFromEnv } = require("../src/utils/config");
+		const config = loadConfigFromEnv();
+
+		expect(config.zeroG.evmRpc).toBe("https://custom-rpc.example.com");
+		expect(config.zeroG.indexerRpc).toBe("https://indexer.example.com");
+		expect(config.zeroG.privateKey).toBe("0xkey123");
+		expect(config.inference.endpoint).toBe("https://inference.example.com");
+
+		// Cleanup
+		delete process.env.ZG_EVM_RPC;
+		delete process.env.ZG_INDEXER_RPC;
+		delete process.env.ZG_PRIVATE_KEY;
+		delete process.env.INFERENCE_ENDPOINT;
+		delete process.env.INFERENCE_API_KEY;
+	});
+});
