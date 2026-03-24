@@ -68,6 +68,7 @@ describe("Agent", () => {
 		);
 		expect(agent.run("")).rejects.toThrow("empty");
 		expect(agent.run("   ")).rejects.toThrow("empty");
+		expect(agent.run(null as unknown as string)).rejects.toThrow();
 	});
 
 	test("saveState stores to memory", async () => {
