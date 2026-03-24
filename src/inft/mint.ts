@@ -39,6 +39,13 @@ export async function mintINFT(
 	wallet: AgentWallet,
 	options: MintOptions,
 ): Promise<MintResult> {
+	if (!options.contractAddress || !options.contractAddress.startsWith("0x")) {
+		throw new Error("contractAddress must be a valid address starting with 0x");
+	}
+	if (!options.capabilities || options.capabilities.length === 0) {
+		throw new Error("At least one capability is required");
+	}
+
 	const metadata: AgentMetadata = createMetadataFromAgent(
 		options.agent.name,
 		options.agent.description,
