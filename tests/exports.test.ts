@@ -61,6 +61,10 @@ describe("Package exports", () => {
 		expect(typeof lib.loadConfigFromEnv).toBe("function");
 	});
 
+	test("exports quickAgent helper", () => {
+		expect(typeof lib.quickAgent).toBe("function");
+	});
+
 	test("exports crypto utilities", () => {
 		expect(typeof lib.encrypt).toBe("function");
 		expect(typeof lib.decrypt).toBe("function");
