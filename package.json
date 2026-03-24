@@ -1,0 +1,53 @@
+{
+  "name": "0g-agent-kit",
+  "version": "0.1.0",
+  "description": "TypeScript SDK for building, deploying, and monetizing AI agents on the 0G network",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.mjs",
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./tools/defi": {
+      "import": "./dist/tools/defi.mjs",
+      "require": "./dist/tools/defi.js",
+      "types": "./dist/tools/defi.d.ts"
+    },
+    "./tools/storage": {
+      "import": "./dist/tools/storage.mjs",
+      "require": "./dist/tools/storage.js",
+      "types": "./dist/tools/storage.d.ts"
+    },
+    "./templates/*": {
+      "import": "./dist/templates/*.mjs",
+      "require": "./dist/templates/*.js",
+      "types": "./dist/templates/*.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "bun build src/index.ts --outdir dist --target node && tsc --emitDeclarationOnly",
+    "dev": "bun run --watch examples/simple-agent/index.ts",
+    "test": "bun test",
+    "lint": "bunx biome check --write .",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": ["0g", "ai-agents", "inft", "erc-7857", "typescript", "sdk", "web3", "defi", "decentralized-ai"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexandre-mrt/0g-agent-kit"
+  },
+  "dependencies": {
+    "@0gfoundation/0g-ts-sdk": "latest",
+    "ethers": "^6.13.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.6.0"
+  }
+}

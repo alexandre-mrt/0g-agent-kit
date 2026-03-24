@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+.env.local
+*.db
+.DS_Store
+bun.lockb
+cache/
+artifacts/
