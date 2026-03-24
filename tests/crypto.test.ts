@@ -113,4 +113,21 @@ describe("hashData", () => {
 	test("different inputs produce different hashes", () => {
 		expect(hashData("a")).not.toBe(hashData("b"));
 	});
+
+	test("produces known SHA-256 value", () => {
+		// SHA-256 of "test" is well-known
+		expect(hashData("test")).toBe("9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08");
+	});
+
+	test("handles empty string", () => {
+		const hash = hashData("");
+		expect(hash).toMatch(/^[a-f0-9]{64}$/);
+		// SHA-256 of "" is known
+		expect(hash).toBe("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+	});
+
+	test("handles very long input", () => {
+		const hash = hashData("x".repeat(100000));
+		expect(hash).toMatch(/^[a-f0-9]{64}$/);
+	});
 });
